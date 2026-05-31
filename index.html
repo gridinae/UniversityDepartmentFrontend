@@ -2,16 +2,97 @@
 <html lang="ru">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>University Department API Frontend</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .form {
+            margin: 10px 0;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+
+        button,
+        input,
+        select {
+            margin: 3px;
+            padding: 6px 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            text-align: left;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 100px auto;
+            padding: 20px;
+            width: 400px;
+            border-radius: 5px;
+        }
+
+        .modal-content input,
+        .modal-content select {
+            width: 100%;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+
+        .modal-content button {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>University Department Frontend</h1>
+    <h1>University Department API - Frontend</h1>
 
-    <!-- Блок "Вход" -->
-    <div class="block" id="loginBlock">
+    <!-- Блок входа -->
+    <div id="loginBlock" class="card">
         <h2>Вход</h2>
         <form id="loginForm" class="form">
             <input type="text" id="login" placeholder="Login" required />
@@ -21,8 +102,8 @@
         <p class="error" id="loginError"></p>
     </div>
 
-    <!-- Блок "Аккаунт" -->
-    <div class="block" id="meBlock">
+    <!-- Блок после входа -->
+    <div id="meBlock" class="card" style="display: none;">
         <h2>Вы вошли как</h2>
         <p>Роль: <span id="role"></span></p>
         <p>Пользователь: <span id="meName"></span></p>
@@ -41,11 +122,11 @@
         </div>
     </div>
 
-    <!-- Блок "Аудитории" -->
-    <div class="block" id="classroomsBlock">
+    <!-- АУДИТОРИИ -->
+    <div id="classroomsBlock" class="card" style="display: none;">
         <h2>Аудитории</h2>
-        <button id="addClassroomBtn">Добавить аудиторию</button>
-        <button id="loadClassroomsBtn">Обновить</button>
+        <button id="addClassroomBtn">➕ Добавить аудиторию</button>
+        <button id="loadClassroomsBtn">🔄 Обновить</button>
         <table id="classroomsTable">
             <thead>
                 <tr>
@@ -61,11 +142,11 @@
         <p class="error" id="classroomsError"></p>
     </div>
 
-    <!-- Блок "Преподаватели" -->
-    <div class="block" id="teachersBlock">
+    <!-- ПРЕПОДАВАТЕЛИ -->
+    <div id="teachersBlock" class="card" style="display: none;">
         <h2>Преподаватели</h2>
-        <button id="addTeacherBtn">Добавить преподавателя</button>
-        <button id="loadTeachersBtn">Обновить</button>
+        <button id="addTeacherBtn">➕ Добавить преподавателя</button>
+        <button id="loadTeachersBtn">🔄 Обновить</button>
         <table id="teachersTable">
             <thead>
                 <tr>
@@ -73,8 +154,6 @@
                     <th>ФИО</th>
                     <th>Аудитория</th>
                     <th>Ставка</th>
-                    <th>Логин</th>
-                    <th>Пароль</th>
                     <th>Действия</th>
                 </tr>
             </thead>
@@ -83,11 +162,11 @@
         <p class="error" id="teachersError"></p>
     </div>
 
-    <!-- Блок "Дисциплины" -->
-    <div class="block" id="disciplinesBlock">
+    <!-- ДИСЦИПЛИНЫ -->
+    <div id="disciplinesBlock" class="card" style="display: none;">
         <h2>Дисциплины</h2>
-        <button id="addDisciplineBtn">Добавить дисциплину</button>
-        <button id="loadDisciplinesBtn">Обновить</button>
+        <button id="addDisciplineBtn">➕ Добавить дисциплину</button>
+        <button id="loadDisciplinesBtn">🔄 Обновить</button>
         <table id="disciplinesTable">
             <thead>
                 <tr>
@@ -103,8 +182,8 @@
         <p class="error" id="disciplinesError"></p>
     </div>
 
-    <!-- Блок "Мои дисциплины" (для преподавателя) -->
-    <div class="block" id="teachingsBlock">
+    <!-- МОИ ДИСЦИПЛИНЫ (для преподавателя) -->
+    <div id="teachingsBlock" class="card" style="display: none;">
         <h2>Мои преподаваемые дисциплины</h2>
         <table id="teachingsTable">
             <thead>
@@ -119,8 +198,10 @@
         <p class="error" id="teachingsError"></p>
     </div>
 
-    <!-- Модальное окно "Добавление аудитории" -->
-    <div class="modal-window" id="addClassroomModal">
+    <!-- МОДАЛЬНЫЕ ОКНА -->
+
+    <!-- Добавление аудитории -->
+    <div id="addClassroomModal" class="modal">
         <div class="modal-content">
             <h3>Добавить аудиторию</h3>
             <input type="text" id="addRoomNumber" placeholder="Номер аудитории" />
@@ -131,8 +212,8 @@
         </div>
     </div>
 
-    <!-- Модальное окно "Редактирование аудитории"-->
-    <div class="modal-window" id="editClassroomModal">
+    <!-- Редактирование аудитории -->
+    <div id="editClassroomModal" class="modal">
         <div class="modal-content">
             <h3>Редактировать аудиторию</h3>
             <input type="hidden" id="editClassroomId" />
@@ -144,8 +225,8 @@
         </div>
     </div>
 
-    <!-- Модальное окно "Добавление преподавателя" -->
-    <div class="modal-window" id="addTeacherModal">
+    <!-- Добавление преподавателя -->
+    <div id="addTeacherModal" class="modal">
         <div class="modal-content">
             <h3>Добавить преподавателя</h3>
             <input type="text" id="addTeacherLastName" placeholder="Фамилия" />
@@ -153,19 +234,13 @@
             <input type="text" id="addTeacherMiddleName" placeholder="Отчество" />
             <select id="addTeacherClassroomId"></select>
             <input type="number" step="0.1" id="addTeacherRate" placeholder="Ставка" />
-
-            <hr style="margin: 15px 0;" />
-            <h4>Данные для входа</h4>
-            <input type="text" id="addTeacherLogin" placeholder="Логин" />
-            <input type="password" id="addTeacherPassword" placeholder="Пароль" />
-
             <button id="saveAddTeacherBtn">Сохранить</button>
             <button id="closeAddTeacherModal">Отмена</button>
         </div>
     </div>
 
-    <!-- Модальное окно "Редактирование преподавателя" -->
-    <div class="modal-window" id="editTeacherModal">
+    <!-- Редактирование преподавателя -->
+    <div id="editTeacherModal" class="modal">
         <div class="modal-content">
             <h3>Редактировать преподавателя</h3>
             <input type="hidden" id="editTeacherId" />
@@ -174,19 +249,13 @@
             <input type="text" id="editTeacherMiddleName" placeholder="Отчество" />
             <select id="editTeacherClassroomId"></select>
             <input type="number" step="0.1" id="editTeacherRate" placeholder="Ставка" />
-
-            <hr style="margin: 15px 0;" />
-            <h4>Данные для входа</h4>
-            <input type="text" id="editTeacherLogin" placeholder="Логин (оставьте пустым, чтобы не менять)" />
-            <input type="password" id="editTeacherPassword" placeholder="Пароль (оставьте пустым, чтобы не менять)" />
-
             <button id="saveEditTeacherBtn">Сохранить</button>
             <button id="closeEditTeacherModal">Отмена</button>
         </div>
     </div>
 
-    <!-- Модальное окно "Добавление дисциплины" -->
-    <div class="modal-window" id="addDisciplineModal">
+    <!-- Добавление дисциплины -->
+    <div id="addDisciplineModal" class="modal">
         <div class="modal-content">
             <h3>Добавить дисциплину</h3>
             <input type="text" id="addTitle" placeholder="Название" />
@@ -197,8 +266,8 @@
         </div>
     </div>
 
-    <!-- Модальное окно "Редактирование дисциплины" -->
-    <div class="modal-window" id="editDisciplineModal">
+    <!-- Редактирование дисциплины -->
+    <div id="editDisciplineModal" class="modal">
         <div class="modal-content">
             <h3>Редактировать дисциплину</h3>
             <input type="hidden" id="editDisciplineId" />
@@ -209,6 +278,7 @@
             <button id="closeEditDisciplineModal">Отмена</button>
         </div>
     </div>
+
     <script src="app.js"></script>
 </body>
 
